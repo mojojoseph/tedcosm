@@ -13,4 +13,4 @@ file, tedcosm.hrl, with the following information:
 In erl, you can then c(tedcosm). and tedcosm:start().  Over time I'll be adding the ability to 
 daemonize and run.
 
-Feel free to e-mail questions, joeaintexas@gmail.com.
+Feel free to e-mail questions, joeaintexas@gmail.com.  You can see my COSM feed using this software at https://cosm.com/feeds/64467.
