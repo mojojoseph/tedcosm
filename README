@@ -1,0 +1,16 @@
+tedcosm is a simple Erlang application for obtaining current power consumption from a TED5000 
+device and uploading it to cosm.com.  
+
+To use tedcosm you will obviously need a TED5000 and an account on cosm.com.  After that create a 
+file, tedcosm.hrl, with the following information:
+
+-define(COSM_API_KEY, _YOUR_COSM_API_KEY_).
+-define(COSM_URL, "http://api.cosm.com/v2/feeds/_YOUR_FEED_ID_/datastreams/_DATASTREAM_/datapoints.json").
+-define(TED_URL, "http://_YOUR_TED_IP_/api/LiveData.xml").
+-define(DEBUG, 0).
+-define(UPLOAD_RATE, 3000).
+
+In erl, you can then c(tedcosm). and tedcosm:start().  Over time I'll be adding the ability to 
+daemonize and run.
+
+Feel free to e-mail questions, joeaintexas@gmail.com.
