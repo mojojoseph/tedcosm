@@ -10,7 +10,9 @@ file, tedcosm.hrl, with the following information:
 -define(DEBUG, 0).
 -define(UPLOAD_RATE, 3000).
 
-Place tedcosm.hrl in the include/ directory.
+Place tedcosm.hrl in the include/ directory and compile:
+
+./rebar compile
 
 Use rebar to generate an Erlang daemon application:
 
@@ -19,5 +21,16 @@ Use rebar to generate an Erlang daemon application:
 To run TEDCOSM:
 
 $ ./rel/tedcosm/bin/tedcosm start
+
+NB:  You must first compile the source and then generate the application.  Future versions may include a Makefile to automate.
+
+NB:  You _must_ create an include/tedcosm.hrl file with the noted constants
+defined.
+
+COSM_API_KEY - Your COSM API key, given to you at cosm.com
+COSM_URL     - The URL to your feed's datastream datapoints
+TED_URL      - The URL to your TED's LiveData XML stream
+DEBUG        - Debugging logs on (1) or off (0)
+UPLOAD_RATE  - The rate, in milliseconds, to acquire and upload power data
 
 Feel free to e-mail questions, joeaintexas@gmail.com.  You can see my COSM feed using this software at https://cosm.com/feeds/64467.
