@@ -1,40 +1,50 @@
-%%
-%% tedcosm
-%%
+-module(tedcosm_app).
 
--module(tedcosm).
-
--include("tedcosm.hrl").
-
--export([start/0, get_and_upload/1]).
-
+-include("include/tedcosm.hrl").
 -include_lib("xmerl/include/xmerl.hrl").
 
-start() ->
+-behaviour(application).
+
+%% Application callbacks
+-export([start/2, stop/1, start_link/0]).
+
+%% ===================================================================
+%% Application callbacks
+%% ===================================================================
+
+start(_StartType, _StartArgs) ->
+    tedcosm_sup:start_link().
+
+stop(_State) ->
+    ok.
+
+start_link() ->
     inets:start(),
-    loop(0).
+    debug_log("Spawning TEDCOSM"),
+    loop().
 
-loop(Count) ->
-    debug_log("Count = ~p~n", [Count]),
-    timer:apply_after(?UPLOAD_RATE, tedcosm, get_and_upload, [Count]).
+loop() ->
+    receive _ -> ok
+    after ?UPLOAD_RATE ->
+	    get_and_upload(),
+	    loop()
+    end.
 
-get_and_upload(Count) ->
-    {Return, {_, _, Body}} =
-	httpc:request(?TED_URL),
+get_and_upload() ->
+    {Return, {_, _, Body}} = httpc:request(?TED_URL),
     if Return =:= ok ->
 	    Power = get_power(Body),
 	    upload_power(Power);
        true ->
 	    debug_log("Unable to get TED data")
-    end,
-    loop(Count + 1).
+    end.
 
 %
 % Get a suitable timestamp using the underlying OS date command.  Timestamp is
 % given in UTC.
 %
 timestamp() ->
-    % remove trailing \n
+    % remove trailing \n (0x0a, or 10, is the ASCII code for \n)
     string:strip(os:cmd("date -u '+%Y-%m-%dT%TZ'"), right, 10).
 
 %
@@ -52,12 +62,11 @@ upload_power(Power) ->
     Json = "{\"datapoints\":[{\"at\":\"" ++ timestamp() ++ "\", \"value\": \"" ++ Power ++ "\"}]}",
     debug_log("Uploading ~p to COSM~n", [Json]),
     PostUrl = ?COSM_URL ++ "?key=" ++ ?COSM_API_KEY,
-    {Return, {StatusLine, _, Body}} = httpc:request(post, {PostUrl,
-							  [],
-							  "application/json",
-							  Json},
-						   [], []),
-    debug_log("return = ~p~p~p~n", [Return, StatusLine,Body]).
+    httpc:request(post, {PostUrl,
+			 [],
+			 "application/json",
+			 Json},
+		  [], []).
 
 debug_log(Format) ->
     debug_log(Format, []).
