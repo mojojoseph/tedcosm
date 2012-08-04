@@ -10,7 +10,14 @@ file, tedcosm.hrl, with the following information:
 -define(DEBUG, 0).
 -define(UPLOAD_RATE, 3000).
 
-In erl, you can then c(tedcosm). and tedcosm:start().  Over time I'll be adding the ability to 
-daemonize and run.
+Place tedcosm.hrl in the include/ directory.
+
+Use rebar to generate an Erlang daemon application:
+
+./rebar generate
+
+To run TEDCOSM:
+
+$ ./rel/tedcosm/bin/tedcosm start
 
 Feel free to e-mail questions, joeaintexas@gmail.com.  You can see my COSM feed using this software at https://cosm.com/feeds/64467.
